@@ -15,3 +15,12 @@ export const ErrorMessages = {
   INVALID_CREDENTIALS: 'Epic sadface: Username and password do not match any user in this service',
   LOCKED_OUT: 'Epic sadface: Sorry, this user has been locked out.',
 } as const;
+
+export const ProtectedRoutes = [
+  { path: '/inventory.html', label: 'inventory' },
+  { path: '/cart.html', label: 'cart' },
+  { path: '/checkout-step-one.html', label: 'checkout' },
+] as const;
+
+export const protectedRouteError = (path: string) =>
+  `Epic sadface: You can only access '${path}' when you are logged in.`;
