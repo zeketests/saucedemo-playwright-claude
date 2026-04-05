@@ -26,8 +26,24 @@ export class HeaderComponent {
     await this.logoutLink.waitFor({ state: 'visible' });
   }
 
+  async closeMenu() {
+    await this.closeMenuButton.click();
+    await this.logoutLink.waitFor({ state: 'hidden' });
+  }
+
   async logout() {
     await this.openMenu();
     await this.logoutLink.click();
+  }
+
+  async goToAllItems() {
+    await this.openMenu();
+    await this.allItemsLink.click();
+  }
+
+  async resetAppState() {
+    await this.openMenu();
+    await this.resetAppStateLink.click();
+    await this.closeMenu();
   }
 }
