@@ -1,24 +1,30 @@
-# Playwright Login Test Framework — Swag Labs
+# saucedemo-playwright-claude
 
-Automated test framework for [saucedemo.com](https://www.saucedemo.com) login functionality, built with [Playwright](https://playwright.dev) and TypeScript following the Page Object Model pattern.
+End-to-end test automation framework for [saucedemo.com](https://www.saucedemo.com) (Swag Labs), built with [Playwright](https://playwright.dev) and TypeScript. Developed entirely using **Claude** as a demonstration of AI-assisted test automation.
 
 ---
 
 ## Project Structure
 
 ```
-playwright-cli-demo/
+saucedemo-playwright-claude/
 ├── .github/
 │   └── workflows/
-│       └── playwright.yml      # CI: runs tests on every push to main
+│       └── playwright.yml          # CI: runs tests on every push to main
 ├── data/
-│   └── credentials.ts          # Centralized test data (users, passwords, error messages)
+│   ├── credentials.ts              # Users, passwords, error messages, protected routes
+│   └── products.ts                 # Product catalog, sort options, expected sort orders
+├── docs/
+│   └── test-plan.md                # Full test plan with all suites and regression matrix
 ├── pages/
-│   ├── LoginPage.ts            # Page Object: login page locators & actions
-│   └── InventoryPage.ts        # Page Object: post-login inventory page
+│   ├── components/
+│   │   └── HeaderComponent.ts      # Shared: hamburger menu, cart badge, cart link
+│   ├── LoginPage.ts                # Login form interactions
+│   └── InventoryPage.ts            # Product listing, sorting, add/remove cart
 ├── tests/
-│   └── login.spec.ts           # Test cases (positive & negative login scenarios)
-├── playwright.config.ts        # Playwright configuration
+│   ├── auth.spec.ts                # Suite 1: Authentication (AUTH-01 to AUTH-17)
+│   └── inventory.spec.ts           # Suite 2: Inventory / Product Listing (INV-01 to INV-12)
+├── playwright.config.ts            # Playwright configuration
 └── package.json
 ```
 
@@ -49,6 +55,10 @@ npx playwright install chromium
 # Run all tests (headless)
 npm test
 
+# Run a specific suite
+npx playwright test tests/auth.spec.ts
+npx playwright test tests/inventory.spec.ts
+
 # Run with UI mode
 npm run test:ui
 
@@ -60,61 +70,67 @@ npm run test:report
 
 ## Test Coverage
 
-### Positive Scenarios
-| Test | User |
-|------|------|
-| Successful login | `standard_user` |
-| Successful login | `problem_user` |
-| Successful login | `performance_glitch_user` |
-| Successful login | `error_user` |
-| Successful login | `visual_user` |
+### Implemented
 
-### Negative Scenarios
-| Test | Expected Error |
-|------|---------------|
-| Empty username and password | `Username is required` |
-| Empty password | `Password is required` |
-| Empty username | `Username is required` |
-| Invalid password | `Username and password do not match any user in this service` |
-| Non-existent user | `Username and password do not match any user in this service` |
-| Locked out user | `Sorry, this user has been locked out.` |
-| Case-sensitive username | `Username and password do not match any user in this service` |
-| Case-sensitive password | `Username and password do not match any user in this service` |
+| Suite | Spec | Cases | Status |
+|-------|------|-------|--------|
+| Authentication | `auth.spec.ts` | 19 | ✅ |
+| Inventory / Product Listing | `inventory.spec.ts` | 12 | ✅ |
+
+### Planned (see [docs/test-plan.md](docs/test-plan.md))
+
+| Suite | Cases | Priority |
+|-------|-------|----------|
+| Product Detail | 6 | Medium |
+| Shopping Cart | 7 | High |
+| Checkout Step 1 — Customer Info | 5 | High |
+| Checkout Step 2 — Order Summary | 8 | High |
+| Order Confirmation | 5 | Medium |
+| Navigation & Session | 5 | Medium |
+
+---
+
+## Page Objects
+
+| Class | Responsibility |
+|-------|---------------|
+| `LoginPage` | Username/password form, error messages |
+| `InventoryPage` | Product list, sorting, add/remove cart, navigation to detail |
+| `HeaderComponent` | Hamburger menu (logout, reset), cart badge, cart link |
 
 ---
 
 ## CI/CD
 
-Tests run automatically on every push to `main` via GitHub Actions. The workflow:
+Tests run automatically on every push to `main` via GitHub Actions ([.github/workflows/playwright.yml](.github/workflows/playwright.yml)):
 
-1. Checks out the repository
-2. Installs Node.js and dependencies
-3. Installs Playwright Chromium browser
-4. Runs the full test suite
-5. Uploads the HTML report as an artifact (retained 30 days)
-
-See [.github/workflows/playwright.yml](.github/workflows/playwright.yml).
+1. Checkout → Install Node.js → `npm ci`
+2. Install Playwright Chromium browser
+3. Run full test suite
+4. Upload HTML report as artifact (retained 30 days)
 
 ---
 
-## Design Decisions
+## Test Users
 
-- **Page Object Model** — locators and interactions are encapsulated in page classes under `pages/`, keeping tests clean and maintainable
-- **`data-test` attributes** — uses the stable selectors provided by the app (`[data-test="username"]`, etc.) instead of fragile CSS or XPath
-- **Centralized test data** — all credentials and expected error strings live in `data/credentials.ts`, so a single change propagates everywhere
-- **Artifact capture on failure** — screenshots, videos, and traces are saved automatically when a test fails, configured in `playwright.config.ts`
+| Username | Password | Behaviour |
+|----------|----------|-----------|
+| `standard_user` | `secret_sauce` | Full access |
+| `locked_out_user` | `secret_sauce` | Blocked at login |
+| `problem_user` | `secret_sauce` | Logs in, known UI defects |
+| `performance_glitch_user` | `secret_sauce` | Logs in with deliberate delay |
+| `error_user` | `secret_sauce` | Logs in, some actions fail |
+| `visual_user` | `secret_sauce` | Logs in, visual defects |
 
 ---
 
 ## Built with Claude
 
-This framework was built entirely using **[Claude Code](https://claude.ai/code)** — Anthropic's AI coding assistant — as a demonstration of AI-assisted test automation.
+This framework was built entirely using **[Claude Code](https://claude.ai/code)** — Anthropic's AI coding assistant.
 
-The workflow used the `playwright-cli` skill to drive a real browser session against saucedemo.com before writing a single line of test code:
+The workflow used the `playwright-cli` skill to drive a real browser session before writing any test code:
 
-1. **Exploration** — Claude opened the site in a live browser, inspected the DOM snapshot, and identified stable `data-test` selectors for all interactive elements
-2. **Behavior mapping** — Claude exercised each login scenario (valid users, locked out, wrong password, empty fields) and captured the exact error messages returned by the app
-3. **Framework generation** — Based on the observed behavior, Claude generated the full POM structure, test data layer, test specs, Playwright config, CI workflow, and `.gitignore`
-4. **Validation** — Claude ran the full test suite and confirmed all 13 tests passed before committing
-
-All 13 tests were written and verified without manual browser interactions.
+1. **Exploration** — Claude navigated the site live, inspected DOM snapshots, and captured all stable `data-test` selectors
+2. **Behavior mapping** — Claude exercised every flow (login, sorting, add/remove cart, checkout, protected routes) and recorded exact error messages and URL transitions
+3. **Framework generation** — POM structure, data layer, test specs, CI workflow, and documentation generated from observed behavior
+4. **Validation** — Full suite executed and confirmed green before every commit
