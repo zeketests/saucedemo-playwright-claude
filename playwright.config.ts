@@ -5,6 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  globalSetup: './tests/global-setup.ts',
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
@@ -16,6 +17,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
+    testIdAttribute: 'data-test',
   },
   projects: [
     {

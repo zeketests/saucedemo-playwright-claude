@@ -1,5 +1,8 @@
 node_modules/
 
+# Auth state
+.auth/
+
 # Playwright
 test-results/
 playwright-report/
