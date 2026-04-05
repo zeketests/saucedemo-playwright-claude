@@ -6,6 +6,14 @@ allowed-tools: Bash(playwright-cli:*) Bash(npx:*) Bash(npm:*)
 
 # Browser Automation with playwright-cli
 
+## Installation
+
+`playwright-cli` is not a project dependency. Install it globally before using this skill:
+
+```bash
+npm install -g @playwright/cli
+```
+
 ## Quick start
 
 ```bash

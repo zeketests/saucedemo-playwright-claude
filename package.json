@@ -16,7 +16,6 @@
   "license": "ISC",
   "description": "A Playwright test suite for SauceDemo created with help from Claude.",
   "devDependencies": {
-    "@playwright/cli": "^0.1.5",
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.5.2",
     "allure-commandline": "^2.38.1",
