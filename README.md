@@ -117,4 +117,4 @@ The workflow used the `playwright-cli` skill to drive a real browser session aga
 3. **Framework generation** — Based on the observed behavior, Claude generated the full POM structure, test data layer, test specs, Playwright config, CI workflow, and `.gitignore`
 4. **Validation** — Claude ran the full test suite and confirmed all 13 tests passed before committing
 
-All 13 tests were written and verified without manual browser interaction.
+All 13 tests were written and verified without manual browser interactions.
