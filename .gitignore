@@ -15,8 +15,9 @@ playwright/.cache/
 allure-results/
 allure-report/
 
-# Claude
-.claude/
+# Claude — ignore personal/local data, but track shared skills
+.claude/memory/
+.claude/settings.local.json
 
 # Environment
 .env

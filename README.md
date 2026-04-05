@@ -46,18 +46,37 @@ saucedemo-playwright-claude/
 
 - [Node.js](https://nodejs.org) v18+
 - npm
+- [Claude Code](https://claude.ai/code) — for AI-assisted browser exploration with the `playwright-cli` skill
 
 ---
 
 ## Setup
 
 ```bash
+# Clone the repository
+git clone https://github.com/zeketests/saucedemo-playwright-claude.git
+cd saucedemo-playwright-claude
+
 # Install dependencies
 npm install
 
 # Install Playwright browsers
 npx playwright install chromium
 ```
+
+### playwright-cli (for AI-assisted browser exploration)
+
+`playwright-cli` is a standalone CLI tool that lets Claude Code drive a real browser session — used during the exploration phase to capture selectors and map application behaviour before writing any test code.
+
+```bash
+# Install globally
+npm install -g @playwright/cli@latest
+
+# Verify the installation
+playwright-cli --version
+```
+
+The `playwright-cli` skill is already bundled in this repo at `.claude/skills/playwright-cli/`. Claude Code picks it up automatically when you open the project — no extra configuration needed.
 
 ---
 
