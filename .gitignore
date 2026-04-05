@@ -7,6 +7,9 @@ blob-report/
 playwright/.cache/
 .playwright-cli/
 
+# Claude
+.claude/
+
 # Environment
 .env
 .env.local
@@ -24,3 +27,11 @@ Thumbs.db
 
 # Build
 dist/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
