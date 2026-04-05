@@ -1,6 +1,6 @@
 # saucedemo-playwright-claude
 
-End-to-end test automation framework for [saucedemo.com](https://www.saucedemo.com) (Swag Labs), built with [Playwright](https://playwright.dev) and TypeScript. Developed entirely using **Claude** as a demonstration of AI-assisted test automation.
+End-to-end test automation framework for [saucedemo.com](https://www.saucedemo.com) (Swag Labs), built with [Playwright](https://playwright.dev) and TypeScript. Developed with the help of **Claude** as a demonstration of AI-assisted test automation.
 
 ---
 
