@@ -6,6 +6,7 @@ playwright-report/
 blob-report/
 playwright/.cache/
 .playwright-cli/
+.playwright/
 
 # Allure
 allure-results/
