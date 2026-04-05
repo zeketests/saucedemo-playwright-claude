@@ -1,5 +1,7 @@
 # saucedemo-playwright-claude
 
+[![Allure Report](https://img.shields.io/badge/Allure%20Report-View%20Latest-brightgreen)](https://zeketests.github.io/saucedemo-playwright-claude/)
+
 End-to-end test automation framework for [saucedemo.com](https://www.saucedemo.com) (Swag Labs), built with [Playwright](https://playwright.dev) and TypeScript. Developed with the help of **Claude** as a demonstration of AI-assisted test automation.
 
 ---
@@ -118,12 +120,27 @@ npm run test:report
 
 ## CI/CD
 
-Tests run automatically on every push to `main` via GitHub Actions ([.github/workflows/playwright.yml](.github/workflows/playwright.yml)):
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| [playwright.yml](.github/workflows/playwright.yml) | Pull request to `main` | Fast CI check — runs tests, uploads HTML report as artifact (30 days) |
+| [allure-report.yml](.github/workflows/allure-report.yml) | Push to `main` + manual dispatch | Runs tests, generates Allure report, deploys to GitHub Pages |
 
-1. Checkout → Install Node.js → `npm ci`
-2. Install Playwright Chromium browser
-3. Run full test suite
-4. Upload HTML report as artifact (retained 30 days)
+**Steps (both workflows):** Checkout → Install Node.js → `npm ci` → Install Playwright Chromium → Run tests
+
+---
+
+## Allure Report
+
+The latest test report is published automatically to GitHub Pages on every merge to `main`:
+
+**[View Latest Allure Report](https://zeketests.github.io/saucedemo-playwright-claude/)**
+
+To generate and open the report locally:
+
+```bash
+npm run test:allure   # run tests + generate report
+npm run allure:open   # open the report in browser
+```
 
 ---
 
