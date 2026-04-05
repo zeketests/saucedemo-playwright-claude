@@ -10,9 +10,11 @@ End-to-end test automation framework for [saucedemo.com](https://www.saucedemo.c
 
 ```
 saucedemo-playwright-claude/
+├── .auth/                              # Saved login storage states (gitignored)
 ├── .github/
 │   └── workflows/
-│       └── playwright.yml              # CI: runs tests on every push to main
+│       ├── playwright.yml              # CI: runs tests on pull requests to main
+│       └── allure-report.yml           # Allure report: runs on push to main, deploys to Pages
 ├── data/
 │   ├── credentials.ts                  # Users, passwords, error messages, protected routes
 │   └── products.ts                     # Product catalog, sort options, expected sort orders
@@ -29,13 +31,16 @@ saucedemo-playwright-claude/
 │   ├── CheckoutOverviewPage.ts         # Checkout step 2: order summary and price totals
 │   └── OrderConfirmationPage.ts        # Order confirmation and post-purchase state
 ├── tests/
+│   ├── global-setup.ts                 # Saves authenticated storage states for all users
+│   ├── fixtures.ts                     # Pre-authenticated test fixture (standard_user)
 │   ├── auth.spec.ts                    # Suite 1: Authentication (AUTH-01 to AUTH-17)
 │   ├── inventory.spec.ts               # Suite 2: Inventory / Product Listing (INV-01 to INV-12)
 │   ├── product-detail.spec.ts          # Suite 3: Product Detail (DET-01 to DET-06)
 │   ├── cart.spec.ts                    # Suite 4: Shopping Cart (CART-01 to CART-07)
-│   ├── checkout.spec.ts                # Suites 5 & 6: Checkout Steps 1 & 2 (CHK1/CHK2)
+│   ├── checkout.spec.ts                # Suites 5 & 6: Checkout Steps 1 & 2 (CHK1/CHK2/CHK-EC)
 │   ├── order-confirmation.spec.ts      # Suite 7: Order Confirmation (CONF-01 to CONF-05)
-│   └── navigation.spec.ts              # Suite 8: Navigation & Session (NAV-01 to NAV-05)
+│   ├── navigation.spec.ts              # Suite 8: Navigation & Session (NAV-01 to NAV-05)
+│   └── problem-user.spec.ts            # Suite 9: problem_user Known Defects (PROB-01 to PROB-02)
 ├── playwright.config.ts                # Playwright configuration
 └── package.json
 ```
@@ -105,7 +110,7 @@ npm run test:report
 
 ## Test Coverage
 
-**67 tests · 67 passing**
+**70 tests · 70 passing**
 
 | Suite | Spec | Cases | Status |
 |-------|------|-------|--------|
@@ -115,10 +120,14 @@ npm run test:report
 | Shopping Cart | `cart.spec.ts` | 7 | ✅ |
 | Checkout Step 1 — Customer Info | `checkout.spec.ts` | 5 | ✅ |
 | Checkout Step 2 — Order Summary | `checkout.spec.ts` | 8 | ✅ |
+| Checkout — Edge Cases | `checkout.spec.ts` | 1 | ✅ |
 | Order Confirmation | `order-confirmation.spec.ts` | 5 | ✅ |
 | Navigation & Session | `navigation.spec.ts` | 5 | ✅ |
+| problem_user Known Defects | `problem-user.spec.ts` | 2 | ✅ |
 
 > **Note — CART-07:** `test.fail()` is used to document a known saucedemo defect where logout does not clear `localStorage`, causing cart data to persist across sessions. The test will alert if this behaviour ever changes.
+>
+> **Note — PROB-01 / PROB-02:** `test.fail()` is used to document known defects in the `problem_user` account (broken product images, incorrect sort order). These tests will alert if any defect is ever fixed upstream.
 
 ---
 
