@@ -13,7 +13,7 @@ saucedemo-playwright-claude/
 ├── .auth/                              # Saved login storage states (gitignored)
 ├── .github/
 │   └── workflows/
-│       ├── playwright.yml              # CI: runs tests on pull requests to main
+│       ├── playwright.yml              # CI: runs tests on push/PR to main (Docker)
 │       └── allure-report.yml           # Allure report: runs on push to main, deploys to Pages
 ├── data/
 │   ├── credentials.ts                  # Users, passwords, error messages, protected routes
@@ -150,10 +150,13 @@ npm run test:report
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| [playwright.yml](.github/workflows/playwright.yml) | Pull request to `main` | Fast CI check — runs tests, uploads HTML report as artifact (30 days) |
+| [playwright.yml](.github/workflows/playwright.yml) | Push or pull request to `main`/`master` | Fast CI check — runs tests inside the official Playwright Docker image, uploads HTML report as artifact (30 days) |
 | [allure-report.yml](.github/workflows/allure-report.yml) | Push to `main` + manual dispatch | Runs tests, generates Allure report, deploys to GitHub Pages |
 
-**Steps (both workflows):** Checkout → Install Node.js → `npm ci` → Install Playwright Chromium → Run tests
+**playwright.yml steps:** Checkout → `npm ci` → Run tests
+*(Uses `mcr.microsoft.com/playwright:v1.59.1-noble` — Node.js and Chromium are pre-installed in the image; no separate browser install step needed.)*
+
+**allure-report.yml steps:** Checkout → Install Node.js → `npm ci` → Install Playwright Chromium → Run tests → Generate Allure report → Deploy to GitHub Pages
 
 ---
 
