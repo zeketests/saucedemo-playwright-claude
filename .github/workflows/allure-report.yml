@@ -30,6 +30,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Java
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq default-jre
+
       - name: Run Playwright tests
         run: npx playwright test
         continue-on-error: true
