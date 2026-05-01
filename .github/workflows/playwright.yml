@@ -1,39 +1,47 @@
-name: Playwright Tests
+  name: Playwright Tests
 
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  on:
+    push:
+      branches: [main, master]
+    pull_request:
+      branches: [main, master]
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      container:
+        image: mcr.microsoft.com/playwright:v1.59.1-noble
 
-    steps:
-      - uses: actions/checkout@v4
+      steps:
+        - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm ci
+        - name: Install dependencies
+          run: npm ci
 
-      - name: Install Java
-        run: |
-          apt-get update -qq
-          apt-get install -y -qq default-jre
+        - name: Install Java
+          run: |
+            apt-get update -qq
+            apt-get install -y -qq default-jre
 
-      - name: Run Playwright tests
-        run: npx playwright test
+        - name: Run Playwright tests
+          run: npx playwright test
 
-      - name: Generate Allure report
-        if: always()
-        run: npx allure generate allure-results --clean -o allure-report
+        - name: Generate Allure report
+          if: always()
+          run: npx allure generate allure-results --clean -o allure-report
 
-      - name: Upload Allure report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: allure-report
-          path: allure-report/
-          retention-days: 30
+        - name: Upload Allure report
+          uses: actions/upload-artifact@v4
+          if: always()
+          with:
+            name: allure-report
+            path: allure-report/
+            retention-days: 30
+        - name: Upload Playwright traces
+          uses: actions/upload-artifact@v4
+          if: failure()
+          with:
+            name: playwright-traces
+            path: test-results/
+            retention-days: 7
+            

@@ -185,7 +185,9 @@ test.describe('INV — Inventory / Product Listing', () => {
     });
 
     await test.step('Verify navigation to cart page', async () => {
-      await expect(page).toHaveURL('/cart.html');
+      //await expect(page).toHaveURL('/cart.html');
+      // adding a failing assertion to demonstrate test failure and get Trace file
+      await expect(page).toHaveURL('google.com');
     });
   });
 });
