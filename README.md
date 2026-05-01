@@ -13,8 +13,9 @@ saucedemo-playwright-claude/
 ├── .auth/                              # Saved login storage states (gitignored)
 ├── .github/
 │   └── workflows/
-│       ├── playwright.yml              # CI: runs tests on push/PR to main (Docker)
-│       └── allure-report.yml           # Allure report: runs on push to main, deploys to Pages
+│       ├── playwright.yml              # CI: runs tests on push/PR to main (Docker), uploads traces on failure
+│       ├── allure-report.yml           # Allure report: runs on push to main, deploys to Pages
+│       └── manual-tests.yml            # Manual dispatch: run smoke/regression/all by tag
 ├── data/
 │   ├── credentials.ts                  # Users, passwords, error messages, protected routes
 │   └── products.ts                     # Product catalog, sort options, expected sort orders
@@ -91,6 +92,10 @@ The `playwright-cli` skill is already bundled in this repo at `.claude/skills/pl
 # Run all tests (headless)
 npm test
 
+# Run by tag
+npx playwright test --grep "@smoke"       # smoke suite only
+npx playwright test --grep "@regression"  # regression suite only
+
 # Run a specific suite
 npx playwright test tests/auth.spec.ts
 npx playwright test tests/inventory.spec.ts
@@ -105,6 +110,17 @@ npm run test:ui
 # Open HTML report after a run
 npm run test:report
 ```
+
+### Test Tags
+
+Tests are tagged for selective execution:
+
+| Tag | Purpose |
+|-----|---------|
+| `@smoke` | Critical path — fast sanity check |
+| `@regression` | Full regression coverage |
+
+A test tagged `@smoke` inside a `@regression` describe block inherits both tags and runs under either filter.
 
 ---
 
@@ -152,13 +168,16 @@ npm run test:report
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| [playwright.yml](.github/workflows/playwright.yml) | Push or pull request to `main`/`master` | Fast CI check — runs tests inside the official Playwright Docker image, uploads HTML report as artifact (30 days) |
+| [playwright.yml](.github/workflows/playwright.yml) | Push or pull request to `main`/`master` | Full CI run — Playwright Docker image, generates Allure report (artifact 30 days), uploads traces on failure (7 days) |
 | [allure-report.yml](.github/workflows/allure-report.yml) | Push to `main` + manual dispatch | Runs tests, generates Allure report, deploys to GitHub Pages |
+| [manual-tests.yml](.github/workflows/manual-tests.yml) | Manual dispatch (`workflow_dispatch`) | On-demand run of `smoke`, `regression`, or `all` tests — uploads Allure report and traces (on failure) as artifacts |
 
-**playwright.yml steps:** Checkout → `npm ci` → Run tests
-*(Uses `mcr.microsoft.com/playwright:v1.59.1-noble` — Node.js and Chromium are pre-installed in the image; no separate browser install step needed.)*
+**playwright.yml steps:** Checkout → `npm ci` → Install Java → Run tests → Generate Allure report → Upload report → Upload traces (on failure)
+*(Uses `mcr.microsoft.com/playwright:v1.59.1-noble` — Node.js and Chromium are pre-installed; Java installed for Allure CLI.)*
 
 **allure-report.yml steps:** Checkout → Install Node.js → `npm ci` → Install Playwright Chromium → Run tests → Generate Allure report → Deploy to GitHub Pages
+
+**manual-tests.yml steps:** Checkout → `npm ci` → Install Java → Run tests filtered by tag (`@smoke` / `@regression` / all) → Generate Allure report → Upload report → Upload traces (on failure)
 
 ---
 

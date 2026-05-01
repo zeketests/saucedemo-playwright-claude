@@ -185,9 +185,7 @@ test.describe('INV — Inventory / Product Listing', { tag: '@regression' }, () 
     });
 
     await test.step('Verify navigation to cart page', async () => {
-      //await expect(page).toHaveURL('/cart.html');
-      // this test has a deliberate failing assertion to demonstrate Playwright trace capture on failure
-      await expect(page).toHaveURL('google.com');
+      await expect(page).toHaveURL('/cart.html');
     });
   });
 });
