@@ -5,7 +5,7 @@ import { Products } from '../data/products';
 
 const PRODUCT = Products.BACKPACK;
 
-test.describe('DET — Product Detail', () => {
+test.describe('DET — Product Detail', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/inventory.html');
     const inventory = new InventoryPage(page);
@@ -13,7 +13,7 @@ test.describe('DET — Product Detail', () => {
     await expect(page).toHaveURL(/\/inventory-item\.html\?id=\d+/);
   });
 
-  test('[DET-01] should display correct product name, description, price and image', async ({ page }) => {
+  test('[DET-01] should display correct product name, description, price and image', { tag: '@smoke' }, async ({ page }) => {
     const detail = new ProductDetailPage(page);
 
     await test.step('Verify product details match catalog data', async () => {

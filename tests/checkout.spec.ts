@@ -21,7 +21,7 @@ async function goToCheckoutStep1(page: Page) {
 
 // ─── Step 1: Customer Information (CHK1-01 to CHK1-05) ───────────────────────
 
-test.describe('CHK1 — Checkout: Customer Information', () => {
+test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await goToCheckoutStep1(page);
   });
@@ -71,7 +71,7 @@ test.describe('CHK1 — Checkout: Customer Information', () => {
     });
   });
 
-  test('[CHK1-04] should advance to order summary when all fields are filled', async ({ page }) => {
+  test('[CHK1-04] should advance to order summary when all fields are filled', { tag: '@smoke' }, async ({ page }) => {
     const checkout = new CheckoutInfoPage(page);
 
     await test.step('Fill all fields and submit', async () => {
@@ -101,7 +101,7 @@ test.describe('CHK1 — Checkout: Customer Information', () => {
 
 // ─── Step 2: Order Summary (CHK2-01 to CHK2-08) ──────────────────────────────
 
-test.describe('CHK2 — Checkout: Order Summary', () => {
+test.describe('CHK2 — Checkout: Order Summary', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await goToCheckoutStep1(page);
 
@@ -173,7 +173,7 @@ test.describe('CHK2 — Checkout: Order Summary', () => {
     });
   });
 
-  test('[CHK2-07] should navigate to order confirmation when clicking Finish', async ({ page }) => {
+  test('[CHK2-07] should navigate to order confirmation when clicking Finish', { tag: '@smoke' }, async ({ page }) => {
     const overview = new CheckoutOverviewPage(page);
 
     await test.step('Click Finish', async () => {
@@ -200,7 +200,7 @@ test.describe('CHK2 — Checkout: Order Summary', () => {
 
 // ─── Edge Case: Checkout with empty cart ─────────────────────────────────────
 
-test.describe('CHK-EC — Checkout: Edge Cases', () => {
+test.describe('CHK-EC — Checkout: Edge Cases', { tag: '@regression' }, () => {
   test('[CHK-EC] should allow checkout with empty cart and show $0 totals', async ({ page }) => {
     await test.step('Navigate directly to empty cart and proceed to checkout', async () => {
       await page.goto('/cart.html');

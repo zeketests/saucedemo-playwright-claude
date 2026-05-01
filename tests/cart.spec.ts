@@ -15,12 +15,12 @@ async function goToCartWithItems(page: Page) {
   await expect(page).toHaveURL('/cart.html');
 }
 
-test.describe('CART — Shopping Cart', () => {
+test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await goToCartWithItems(page);
   });
 
-  test('[CART-01] should display all added items with correct name, quantity and price', async ({ page }) => {
+  test('[CART-01] should display all added items with correct name, quantity and price', { tag: '@smoke' }, async ({ page }) => {
     const cart = new CartPage(page);
 
     await test.step('Verify 2 items are listed', async () => {
@@ -107,7 +107,7 @@ test.describe('CART — Shopping Cart', () => {
     });
   });
 
-  test('[CART-06] should navigate to checkout step 1 when clicking Checkout', async ({ page }) => {
+  test('[CART-06] should navigate to checkout step 1 when clicking Checkout', { tag: '@smoke' }, async ({ page }) => {
     const cart = new CartPage(page);
 
     await test.step('Click Checkout', async () => {

@@ -5,7 +5,7 @@ import { Users, VALID_PASSWORD, ErrorMessages, ProtectedRoutes, protectedRouteEr
 
 // ─── Positive Login Scenarios (AUTH-01 to AUTH-05) ───────────────────────────
 
-test.describe('AUTH — Positive Login', () => {
+test.describe('AUTH — Positive Login', { tag: '@regression' }, () => {
   const validUsers = [
     { id: 'AUTH-01', user: Users.STANDARD },
     { id: 'AUTH-02', user: Users.PROBLEM },
@@ -31,7 +31,7 @@ test.describe('AUTH — Positive Login', () => {
     });
   }
 
-  test('[AUTH-01] should display inventory page after login with standard_user', async ({ page }) => {
+  test('[AUTH-01] should display inventory page after login with standard_user', { tag: '@smoke' }, async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
@@ -50,7 +50,7 @@ test.describe('AUTH — Positive Login', () => {
     });
   });
 
-  test('[AUTH-03] should login successfully with performance_glitch_user', async ({ page }) => {
+  test('[AUTH-03] should login successfully with performance_glitch_user', { tag: '@regression' }, async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     await test.step('Navigate to login page', async () => {
@@ -69,7 +69,7 @@ test.describe('AUTH — Positive Login', () => {
 
 // ─── Negative Login Scenarios (AUTH-06 to AUTH-13) ───────────────────────────
 
-test.describe('AUTH — Negative Login', () => {
+test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await new LoginPage(page).goto();
   });
@@ -192,7 +192,7 @@ test.describe('AUTH — Negative Login', () => {
 // ─── Logout (AUTH-14) ────────────────────────────────────────────────────────
 
 test.describe('AUTH — Logout', () => {
-  test('[AUTH-14] should logout via hamburger menu and clear session', async ({ page }) => {
+  test('[AUTH-14] should logout via hamburger menu and clear session', { tag: '@smoke' }, async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
@@ -213,7 +213,7 @@ test.describe('AUTH — Logout', () => {
     });
   });
 
-  test('[AUTH-14] should not access protected pages after logout', async ({ page }) => {
+  test('[AUTH-14] should not access protected pages after logout', { tag: '@regression' }, async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
@@ -236,7 +236,7 @@ test.describe('AUTH — Logout', () => {
 
 // ─── Protected Route Access (AUTH-15 to AUTH-17) ─────────────────────────────
 
-test.describe('AUTH — Protected Routes', () => {
+test.describe('AUTH — Protected Routes', { tag: '@regression' }, () => {
   for (const { path, label } of ProtectedRoutes) {
     test(`[AUTH-15/16/17] should redirect unauthenticated access to ${label} page`, async ({ page }) => {
       const loginPage = new LoginPage(page);

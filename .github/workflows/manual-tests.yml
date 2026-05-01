@@ -1,0 +1,62 @@
+name: Manual Test Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Test suite to run'
+        required: true
+        type: choice
+        options:
+          - smoke
+          - regression
+          - all
+        default: smoke
+
+jobs:
+  test:
+    name: Run ${{ github.event.inputs.suite }} tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Java
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq default-jre
+
+      - name: Run ${{ github.event.inputs.suite }} tests
+        run: |
+          if [ "${{ github.event.inputs.suite }}" = "all" ]; then
+            npx playwright test
+          else
+            npx playwright test --grep "@${{ github.event.inputs.suite }}"
+          fi
+
+      - name: Generate Allure report
+        if: always()
+        run: npx allure generate allure-results --clean -o allure-report
+
+      - name: Upload Allure report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-report-${{ github.event.inputs.suite }}
+          path: allure-report/
+          retention-days: 30
+
+      - name: Upload Playwright traces
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces-${{ github.event.inputs.suite }}
+          path: test-results/
+          retention-days: 7

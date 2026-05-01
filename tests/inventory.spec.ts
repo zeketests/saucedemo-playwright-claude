@@ -7,14 +7,14 @@ import {
   TOTAL_PRODUCTS,
 } from '../data/products';
 
-test.describe('INV — Inventory / Product Listing', () => {
+test.describe('INV — Inventory / Product Listing', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/inventory.html');
   });
 
   // ─── Product Display ──────────────────────────────────────────────────────
 
-  test('[INV-01] should display all 6 products with name, description, price and image', async ({ page }) => {
+  test('[INV-01] should display all 6 products with name, description, price and image', { tag: '@smoke' }, async ({ page }) => {
     await test.step('Count products and verify each has name, description, price and image', async () => {
       const items = page.locator('[data-test="inventory-item"]');
       await expect(items).toHaveCount(TOTAL_PRODUCTS);
@@ -81,7 +81,7 @@ test.describe('INV — Inventory / Product Listing', () => {
 
   // ─── Cart Interactions ────────────────────────────────────────────────────
 
-  test('[INV-06] should show badge count 1 and change button to Remove when adding a single item', async ({ page }) => {
+  test('[INV-06] should show badge count 1 and change button to Remove when adding a single item', { tag: '@smoke' }, async ({ page }) => {
     const inventory = new InventoryPage(page);
 
     await test.step('Add backpack to cart', async () => {
@@ -176,7 +176,7 @@ test.describe('INV — Inventory / Product Listing', () => {
     });
   });
 
-  test('[INV-12] should navigate to cart page when clicking the cart icon', async ({ page }) => {
+  test('[INV-12] should navigate to cart page when clicking the cart icon', {tag: '@smoke'}, async ({ page }) => {
     const inventory = new InventoryPage(page);
 
     await test.step('Add item to cart and click cart icon', async () => {

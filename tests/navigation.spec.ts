@@ -4,7 +4,7 @@ import { CartPage } from '../pages/CartPage';
 import { LoginPage } from '../pages/LoginPage';
 import { Products, TOTAL_PRODUCTS } from '../data/products';
 
-test.describe('NAV — Navigation & Session', () => {
+test.describe('NAV — Navigation & Session', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/inventory.html');
   });

@@ -8,7 +8,7 @@ import { SortOptions, TOTAL_PRODUCTS } from '../data/products';
  * These tests use test.fail() to document known bugs in the problem_user account.
  * They will alert if any of these defects are ever fixed upstream.
  */
-test.describe('PROB — problem_user Known Defects', () => {
+test.describe('PROB — problem_user Known Defects', { tag: '@regression' }, () => {
   test.use({ storageState: '.auth/problem-user.json' });
 
   test.beforeEach(async ({ page }) => {

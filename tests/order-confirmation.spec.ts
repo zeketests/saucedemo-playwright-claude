@@ -26,12 +26,12 @@ async function placeOrder(page: Page) {
   await expect(page).toHaveURL('/checkout-complete.html');
 }
 
-test.describe('CONF — Order Confirmation', () => {
+test.describe('CONF — Order Confirmation', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
     await placeOrder(page);
   });
 
-  test('[CONF-01] should display the order confirmation heading', async ({ page }) => {
+  test('[CONF-01] should display the order confirmation heading', { tag: '@smoke' }, async ({ page }) => {
     const confirmation = new OrderConfirmationPage(page);
 
     await test.step('Verify confirmation heading is displayed', async () => {
