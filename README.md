@@ -110,12 +110,12 @@ npm run test:report
 
 ## Test Coverage
 
-**70 tests · 70 passing**
+**70 tests · 69 passing · 1 intentional failure**
 
 | Suite | Spec | Cases | Status |
 |-------|------|-------|--------|
 | Authentication | `auth.spec.ts` | 19 | ✅ |
-| Inventory / Product Listing | `inventory.spec.ts` | 12 | ✅ |
+| Inventory / Product Listing | `inventory.spec.ts` | 12 | ⚠️ |
 | Product Detail | `product-detail.spec.ts` | 6 | ✅ |
 | Shopping Cart | `cart.spec.ts` | 7 | ✅ |
 | Checkout Step 1 — Customer Info | `checkout.spec.ts` | 5 | ✅ |
@@ -128,6 +128,8 @@ npm run test:report
 > **Note — CART-07:** `test.fail()` is used to document a known saucedemo defect where logout does not clear `localStorage`, causing cart data to persist across sessions. The test will alert if this behaviour ever changes.
 >
 > **Note — PROB-01 / PROB-02:** `test.fail()` is used to document known defects in the `problem_user` account (broken product images, incorrect sort order). These tests will alert if any defect is ever fixed upstream.
+>
+> **Note — INV-12:** Contains a deliberate failing assertion (`toHaveURL('google.com')`) added to demonstrate Playwright trace capture on test failure.
 
 ---
 
@@ -190,7 +192,7 @@ npm run allure:open   # open the report in browser
 
 ## Built with Claude
 
-This framework was built entirely using **[Claude Code](https://claude.ai/code)** — Anthropic's AI coding assistant.
+This framework was built with the help of **[Claude Code](https://claude.ai/code)** — Anthropic's AI coding assistant.
 
 The workflow used the `playwright-cli` skill to drive a real browser session before writing any test code:
 
