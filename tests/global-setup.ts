@@ -29,6 +29,17 @@ async function globalSetup() {
   await problemCtx.storageState({ path: '.auth/problem-user.json' });
   await problemCtx.close();
 
+  // ── error_user ────────────────────────────────────────────────────────────
+  const errorCtx = await browser.newContext();
+  const errorPage = await errorCtx.newPage();
+  await errorPage.goto('https://www.saucedemo.com/');
+  await errorPage.locator('[data-test="username"]').fill(Users.ERROR);
+  await errorPage.locator('[data-test="password"]').fill(VALID_PASSWORD);
+  await errorPage.locator('[data-test="login-button"]').click();
+  await errorPage.waitForURL('**/inventory.html');
+  await errorCtx.storageState({ path: '.auth/error-user.json' });
+  await errorCtx.close();
+
   await browser.close();
 }
 

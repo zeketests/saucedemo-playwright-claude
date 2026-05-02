@@ -17,6 +17,7 @@ saucedemo-playwright-claude/
 │       ├── allure-report.yml           # Allure report: runs on push to main, deploys to Pages
 │       └── manual-tests.yml            # Manual dispatch: run smoke/regression/all by tag
 ├── data/
+│   ├── api.ts                          # API base URLs, route constants, shared interfaces (Post, User, Comment)
 │   ├── credentials.ts                  # Users, passwords, error messages, protected routes
 │   └── products.ts                     # Product catalog, sort options, expected sort orders
 ├── docs/
@@ -32,6 +33,9 @@ saucedemo-playwright-claude/
 │   ├── CheckoutOverviewPage.ts         # Checkout step 2: order summary and price totals
 │   └── OrderConfirmationPage.ts        # Order confirmation and post-purchase state
 ├── tests/
+│   ├── api/
+│   │   ├── jsonplaceholder.spec.ts     # API suite: JSONPlaceholder CRUD (API-01 to API-12)
+│   │   └── saucedemo-http.spec.ts      # HTTP smoke: saucedemo.com HTTP-level checks (HTTP-01 to HTTP-05)
 │   ├── global-setup.ts                 # Saves authenticated storage states for all users
 │   ├── fixtures.ts                     # Pre-authenticated test fixture (standard_user)
 │   ├── auth.spec.ts                    # Suite 1: Authentication (AUTH-01 to AUTH-17)
@@ -41,8 +45,9 @@ saucedemo-playwright-claude/
 │   ├── checkout.spec.ts                # Suites 5 & 6: Checkout Steps 1 & 2 (CHK1/CHK2/CHK-EC)
 │   ├── order-confirmation.spec.ts      # Suite 7: Order Confirmation (CONF-01 to CONF-05)
 │   ├── navigation.spec.ts              # Suite 8: Navigation & Session (NAV-01 to NAV-05)
-│   └── problem-user.spec.ts            # Suite 9: problem_user Known Defects (PROB-01 to PROB-02)
-├── playwright.config.ts                # Playwright configuration
+│   ├── problem-user.spec.ts            # Suite 9: problem_user Known Defects (PROB-01 to PROB-02)
+│   └── error-user.spec.ts              # Suite 10: error_user Known Defects (ERR-01 to ERR-04)
+├── playwright.config.ts                # Playwright configuration (chromium + api projects)
 └── package.json
 ```
 
@@ -92,6 +97,10 @@ The `playwright-cli` skill is already bundled in this repo at `.claude/skills/pl
 # Run all tests (headless)
 npm test
 
+# Run by project
+npx playwright test --project=chromium   # E2E browser tests only
+npx playwright test --project=api        # API tests only
+
 # Run by tag
 npx playwright test --grep "@smoke"       # smoke suite only
 npx playwright test --grep "@regression"  # regression suite only
@@ -103,6 +112,9 @@ npx playwright test tests/cart.spec.ts
 npx playwright test tests/checkout.spec.ts
 npx playwright test tests/order-confirmation.spec.ts
 npx playwright test tests/navigation.spec.ts
+npx playwright test tests/error-user.spec.ts
+npx playwright test tests/api/jsonplaceholder.spec.ts
+npx playwright test tests/api/saucedemo-http.spec.ts
 
 # Run with UI mode
 npm run test:ui
@@ -126,12 +138,14 @@ A test tagged `@smoke` inside a `@regression` describe block inherits both tags 
 
 ## Test Coverage
 
-**70 tests · 69 passing · 1 intentional failure**
+**91 tests · 91 passing**
+
+### E2E — Browser (chromium project)
 
 | Suite | Spec | Cases | Status |
 |-------|------|-------|--------|
 | Authentication | `auth.spec.ts` | 19 | ✅ |
-| Inventory / Product Listing | `inventory.spec.ts` | 12 | ⚠️ |
+| Inventory / Product Listing | `inventory.spec.ts` | 12 | ✅ |
 | Product Detail | `product-detail.spec.ts` | 6 | ✅ |
 | Shopping Cart | `cart.spec.ts` | 7 | ✅ |
 | Checkout Step 1 — Customer Info | `checkout.spec.ts` | 5 | ✅ |
@@ -140,12 +154,21 @@ A test tagged `@smoke` inside a `@regression` describe block inherits both tags 
 | Order Confirmation | `order-confirmation.spec.ts` | 5 | ✅ |
 | Navigation & Session | `navigation.spec.ts` | 5 | ✅ |
 | problem_user Known Defects | `problem-user.spec.ts` | 2 | ✅ |
+| error_user Known Defects | `error-user.spec.ts` | 4 | ✅ |
+
+### API (api project)
+
+| Suite | Spec | Cases | Status |
+|-------|------|-------|--------|
+| JSONPlaceholder Posts & Users | `api/jsonplaceholder.spec.ts` | 12 | ✅ |
+| HTTP Smoke — Saucedemo | `api/saucedemo-http.spec.ts` | 5 | ✅ |
 
 > **Note — CART-07:** `test.fail()` is used to document a known saucedemo defect where logout does not clear `localStorage`, causing cart data to persist across sessions. The test will alert if this behaviour ever changes.
 >
 > **Note — PROB-01 / PROB-02:** `test.fail()` is used to document known defects in the `problem_user` account (broken product images, incorrect sort order). These tests will alert if any defect is ever fixed upstream.
 >
-> **Note — INV-12:** Contains a deliberate failing assertion (`toHaveURL('google.com')`) added to demonstrate Playwright trace capture on test failure.
+> **Note — ERR-01 to ERR-04:** `test.fail()` is used to document known defects in the `error_user` account: add to cart fails for 3 products, remove from cart on the inventory page fails, sorting fires an alert and has no effect, and the Finish button on checkout overview does not navigate to order confirmation.
+>
 
 ---
 
