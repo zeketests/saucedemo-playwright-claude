@@ -6,11 +6,16 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   globalSetup: './tests/global-setup.ts',
-  reporter: [
-    ['list'],
-    ['html', { open: 'never' }],
-    ['allure-playwright', { resultsDir: 'allure-results' }],
-  ],
+  reporter: process.env.CI
+    ? [
+        ['blob', { outputDir: 'blob-report' }],
+        ['list'],
+      ]
+    : [
+        ['list'],
+        ['html', { open: 'never' }],
+        ['allure-playwright', { resultsDir: 'allure-results' }],
+      ],
   use: {
     baseURL: 'https://www.saucedemo.com',
     headless: true,

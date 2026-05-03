@@ -14,6 +14,7 @@ export class CartPage {
     this.cartItems = page.locator('[data-test="inventory-item"]');
     this.continueShoppingButton = page.locator('[data-test="continue-shopping"]');
     this.checkoutButton = page.locator('[data-test="checkout"]');
+
   }
 
   async removeItem(slug: string) {
