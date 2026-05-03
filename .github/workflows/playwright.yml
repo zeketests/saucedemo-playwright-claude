@@ -11,6 +11,43 @@
       runs-on: ubuntu-latest
       container:
         image: mcr.microsoft.com/playwright:v1.59.1-noble
+      strategy:
+        fail-fast: false
+        matrix:
+          shardIndex: [1, 2, 3]
+          shardTotal: [3]
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Install dependencies
+          run: npm ci
+
+        - name: Run Playwright tests
+          run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+          env:
+            CI: true
+
+        - name: Upload blob report
+          uses: actions/upload-artifact@v4
+          if: always()
+          with:
+            name: blob-report-${{ matrix.shardIndex }}
+            path: blob-report/
+            retention-days: 1
+
+        - name: Upload Playwright traces
+          uses: actions/upload-artifact@v4
+          if: failure()
+          with:
+            name: playwright-traces-${{ matrix.shardIndex }}
+            path: test-results/
+            retention-days: 7
+
+    merge-reports:
+      needs: test
+      runs-on: ubuntu-latest
+      if: always()
 
       steps:
         - uses: actions/checkout@v4
@@ -23,12 +60,27 @@
             apt-get update -qq
             apt-get install -y -qq default-jre
 
-        - name: Run Playwright tests
-          run: npx playwright test
+        - name: Download blob reports
+          uses: actions/download-artifact@v4
+          with:
+            pattern: blob-report-*
+            path: blob-report
+            merge-multiple: true
+
+        - name: Merge reports
+          run: npx playwright merge-reports --reporter html,allure-playwright ./blob-report
 
         - name: Generate Allure report
           if: always()
           run: npx allure generate allure-results --clean -o allure-report
+
+        - name: Upload HTML report
+          uses: actions/upload-artifact@v4
+          if: always()
+          with:
+            name: playwright-report
+            path: playwright-report/
+            retention-days: 30
 
         - name: Upload Allure report
           uses: actions/upload-artifact@v4
@@ -37,11 +89,3 @@
             name: allure-report
             path: allure-report/
             retention-days: 30
-        - name: Upload Playwright traces
-          uses: actions/upload-artifact@v4
-          if: failure()
-          with:
-            name: playwright-traces
-            path: test-results/
-            retention-days: 7
-            
