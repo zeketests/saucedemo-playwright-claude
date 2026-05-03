@@ -1,6 +1,7 @@
 # saucedemo-playwright-claude
 
 [![Allure Report](https://img.shields.io/badge/Allure%20Report-View%20Latest-brightgreen)](https://zeketests.github.io/saucedemo-playwright-claude/)
+[![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/zeketests/saucedemo-playwright-claude)
 
 End-to-end test automation framework for [saucedemo.com](https://www.saucedemo.com) (Swag Labs), built with [Playwright](https://playwright.dev) and TypeScript. Developed with the help of **Claude** as a demonstration of AI-assisted test automation.
 
