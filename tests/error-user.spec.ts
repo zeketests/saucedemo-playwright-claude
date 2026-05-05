@@ -1,15 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { errorTest as test, expect } from './fixtures';
 import { InventoryPage } from '../pages/InventoryPage';
 import { Products, SortOptions, ExpectedSortOrder } from '../data/products';
 
-/**
- * error_user defect documentation.
- *
- * These tests use test.fail() to document known bugs in the error_user account.
- * They will alert if any of these defects are ever fixed upstream.
- */
 test.describe('ERR — error_user Known Defects', { tag: '@regression' }, () => {
-  test.use({ storageState: '.auth/error-user.json' });
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/inventory.html');
