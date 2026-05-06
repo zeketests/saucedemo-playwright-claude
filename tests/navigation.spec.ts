@@ -3,10 +3,11 @@ import { InventoryPage } from '../pages/InventoryPage';
 import { CartPage } from '../pages/CartPage';
 import { LoginPage } from '../pages/LoginPage';
 import { Products, TOTAL_PRODUCTS } from '../data/products';
+import { SaucedemoRoutes } from '../data/api';
 
 test.describe('NAV — Navigation & Session', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/inventory.html');
+    await page.goto(SaucedemoRoutes.INVENTORY);
   });
 
   test('[NAV-01] should show all 4 menu items in hamburger menu', async ({ page }) => {
@@ -32,8 +33,8 @@ test.describe('NAV — Navigation & Session', { tag: '@regression' }, () => {
     const cart = new CartPage(page);
 
     await test.step('Navigate to cart page', async () => {
-      await page.goto('/cart.html');
-      await expect(page).toHaveURL('/cart.html');
+      await page.goto(SaucedemoRoutes.CART);
+      await expect(page).toHaveURL(SaucedemoRoutes.CART);
     });
 
     await test.step('Click All Items from hamburger menu', async () => {
@@ -41,7 +42,7 @@ test.describe('NAV — Navigation & Session', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify navigation to inventory', async () => {
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
   });
 
@@ -53,7 +54,7 @@ test.describe('NAV — Navigation & Session', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify session is cleared and login form is shown', async () => {
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
       await expect(new LoginPage(page).usernameInput).toBeVisible();
     });
   });
@@ -88,11 +89,11 @@ test.describe('NAV — Navigation & Session', { tag: '@regression' }, () => {
     });
 
     await test.step('Attempt to access protected route', async () => {
-      await page.goto('/inventory.html');
+      await page.goto(SaucedemoRoutes.INVENTORY);
     });
 
     await test.step('Verify redirect to login with error', async () => {
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
       await expect(new LoginPage(page).errorMessage).toBeVisible();
     });
   });

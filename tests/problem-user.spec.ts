@@ -1,11 +1,12 @@
 import { problemTest as test, expect } from './fixtures';
 import { InventoryPage } from '../pages/InventoryPage';
 import { SortOptions, TOTAL_PRODUCTS } from '../data/products';
+import { SaucedemoRoutes } from '../data/api';
 
 test.describe('PROB — problem_user Known Defects', { tag: '@regression' }, () => {
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/inventory.html');
+    await page.goto(SaucedemoRoutes.INVENTORY);
   });
 
   // Known defect: all product images share the same broken src instead of showing

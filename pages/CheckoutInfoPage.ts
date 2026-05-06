@@ -1,7 +1,7 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class CheckoutInfoPage {
-  readonly page: Page;
+export class CheckoutInfoPage extends BasePage {
   readonly firstNameInput: Locator;
   readonly lastNameInput: Locator;
   readonly postalCodeInput: Locator;
@@ -10,13 +10,13 @@ export class CheckoutInfoPage {
   readonly errorMessage: Locator;
 
   constructor(page: Page) {
-    this.page = page;
-    this.firstNameInput = page.locator('[data-test="firstName"]');
-    this.lastNameInput = page.locator('[data-test="lastName"]');
-    this.postalCodeInput = page.locator('[data-test="postalCode"]');
-    this.continueButton = page.locator('[data-test="continue"]');
-    this.cancelButton = page.locator('[data-test="cancel"]');
-    this.errorMessage = page.locator('[data-test="error"]');
+    super(page);
+    this.firstNameInput = page.getByTestId('firstName');
+    this.lastNameInput = page.getByTestId('lastName');
+    this.postalCodeInput = page.getByTestId('postalCode');
+    this.continueButton = page.getByTestId('continue');
+    this.cancelButton = page.getByTestId('cancel');
+    this.errorMessage = page.getByTestId('error');
   }
 
   async fillForm(firstName: string, lastName: string, postalCode: string) {

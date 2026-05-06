@@ -1,29 +1,16 @@
-import { test, expect } from './fixtures';
-import { InventoryPage } from '../pages/InventoryPage';
+import { test, expect, navigateToCheckoutStep1 } from './fixtures';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutInfoPage } from '../pages/CheckoutInfoPage';
 import { CheckoutOverviewPage } from '../pages/CheckoutOverviewPage';
 import { CheckoutErrors } from '../data/credentials';
 import { Products } from '../data/products';
-import { Page } from '@playwright/test';
-
-async function goToCheckoutStep1(page: Page) {
-  await page.goto('/inventory.html');
-  const inventory = new InventoryPage(page);
-  await inventory.addToCart(Products.BACKPACK.slug);
-  await inventory.addToCart(Products.BIKE_LIGHT.slug);
-  await inventory.header.cartLink.click();
-
-  const cart = new CartPage(page);
-  await cart.proceedToCheckout();
-  await expect(page).toHaveURL('/checkout-step-one.html');
-}
+import { SaucedemoRoutes } from '../data/api';
 
 // ─── Step 1: Customer Information (CHK1-01 to CHK1-05) ───────────────────────
 
 test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
-    await goToCheckoutStep1(page);
+    await navigateToCheckoutStep1(page);
   });
 
   test('[CHK1-01] should show error when submitting empty form', async ({ page }) => {
@@ -36,7 +23,7 @@ test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' },
     await test.step('Verify first name required error', async () => {
       await expect(checkout.errorMessage).toBeVisible();
       await expect(checkout.errorMessage).toHaveText(CheckoutErrors.FIRST_NAME_REQUIRED);
-      await expect(page).toHaveURL('/checkout-step-one.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_ONE);
     });
   });
 
@@ -51,7 +38,7 @@ test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' },
     await test.step('Verify last name required error', async () => {
       await expect(checkout.errorMessage).toBeVisible();
       await expect(checkout.errorMessage).toHaveText(CheckoutErrors.LAST_NAME_REQUIRED);
-      await expect(page).toHaveURL('/checkout-step-one.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_ONE);
     });
   });
 
@@ -67,7 +54,7 @@ test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' },
     await test.step('Verify postal code required error', async () => {
       await expect(checkout.errorMessage).toBeVisible();
       await expect(checkout.errorMessage).toHaveText(CheckoutErrors.POSTAL_CODE_REQUIRED);
-      await expect(page).toHaveURL('/checkout-step-one.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_ONE);
     });
   });
 
@@ -80,7 +67,7 @@ test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' },
     });
 
     await test.step('Verify navigation to order summary', async () => {
-      await expect(page).toHaveURL('/checkout-step-two.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_TWO);
     });
   });
 
@@ -93,7 +80,7 @@ test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' },
     });
 
     await test.step('Verify return to cart with items intact', async () => {
-      await expect(page).toHaveURL('/cart.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CART);
       await expect(cart.cartItems).toHaveCount(2);
     });
   });
@@ -103,12 +90,12 @@ test.describe('CHK1 — Checkout: Customer Information', { tag: '@regression' },
 
 test.describe('CHK2 — Checkout: Order Summary', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
-    await goToCheckoutStep1(page);
+    await navigateToCheckoutStep1(page);
 
     const checkout = new CheckoutInfoPage(page);
     await checkout.fillForm('John', 'Doe', '12345');
     await checkout.continue();
-    await expect(page).toHaveURL('/checkout-step-two.html');
+    await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_TWO);
   });
 
   test('[CHK2-01] should list all cart items with correct names and prices', async ({ page }) => {
@@ -181,7 +168,7 @@ test.describe('CHK2 — Checkout: Order Summary', { tag: '@regression' }, () => 
     });
 
     await test.step('Verify navigation to order confirmation', async () => {
-      await expect(page).toHaveURL('/checkout-complete.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_COMPLETE);
     });
   });
 
@@ -193,7 +180,7 @@ test.describe('CHK2 — Checkout: Order Summary', { tag: '@regression' }, () => 
     });
 
     await test.step('Verify navigation back to inventory', async () => {
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
   });
 });
@@ -203,17 +190,17 @@ test.describe('CHK2 — Checkout: Order Summary', { tag: '@regression' }, () => 
 test.describe('CHK-EC — Checkout: Edge Cases', { tag: '@regression' }, () => {
   test('[CHK-EC] should allow checkout with empty cart and show $0 totals', async ({ page }) => {
     await test.step('Navigate directly to empty cart and proceed to checkout', async () => {
-      await page.goto('/cart.html');
+      await page.goto(SaucedemoRoutes.CART);
       const cart = new CartPage(page);
       await cart.proceedToCheckout();
-      await expect(page).toHaveURL('/checkout-step-one.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_ONE);
     });
 
     await test.step('Fill checkout form and continue', async () => {
       const checkout = new CheckoutInfoPage(page);
       await checkout.fillForm('John', 'Doe', '12345');
       await checkout.continue();
-      await expect(page).toHaveURL('/checkout-step-two.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_TWO);
     });
 
     await test.step('Verify all totals show $0 (saucedemo omits decimals for zero)', async () => {

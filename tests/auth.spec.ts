@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { Users, VALID_PASSWORD, ErrorMessages, ProtectedRoutes, protectedRouteError } from '../data/credentials';
+import { SaucedemoRoutes } from '../data/api';
 
 // ─── Positive Login Scenarios (AUTH-01 to AUTH-05) ───────────────────────────
 
@@ -26,7 +27,7 @@ test.describe('AUTH — Positive Login', { tag: '@regression' }, () => {
       });
 
       await test.step('Verify redirect to inventory', async () => {
-        await expect(page).toHaveURL('/inventory.html');
+        await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
       });
     });
   }
@@ -44,7 +45,7 @@ test.describe('AUTH — Positive Login', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify inventory page is displayed', async () => {
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
       await expect(inventoryPage.inventoryList).toBeVisible();
       await expect(inventoryPage.logo).toHaveText('Swag Labs');
     });
@@ -62,7 +63,7 @@ test.describe('AUTH — Positive Login', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify redirect to inventory (extended timeout for glitch user)', async () => {
-      await expect(page).toHaveURL('/inventory.html', { timeout: 15_000 });
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY, { timeout: 15_000 });
     });
   });
 });
@@ -84,7 +85,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify username required error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.USERNAME_REQUIRED);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -99,7 +100,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify password required error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.PASSWORD_REQUIRED);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -114,7 +115,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify username required error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.USERNAME_REQUIRED);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -128,7 +129,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify invalid credentials error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.INVALID_CREDENTIALS);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -142,7 +143,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify invalid credentials error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.INVALID_CREDENTIALS);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -156,7 +157,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify locked out error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.LOCKED_OUT);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -170,7 +171,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify invalid credentials error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.INVALID_CREDENTIALS);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 
@@ -184,7 +185,7 @@ test.describe('AUTH — Negative Login', { tag: '@regression' }, () => {
     await test.step('Verify invalid credentials error is shown', async () => {
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(ErrorMessages.INVALID_CREDENTIALS);
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
   });
 });
@@ -199,7 +200,7 @@ test.describe('AUTH — Logout', () => {
     await test.step('Login as standard_user', async () => {
       await loginPage.goto();
       await loginPage.login(Users.STANDARD, VALID_PASSWORD);
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
 
     await test.step('Logout via hamburger menu', async () => {
@@ -207,7 +208,7 @@ test.describe('AUTH — Logout', () => {
     });
 
     await test.step('Verify session is cleared and login page is shown', async () => {
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
       await expect(loginPage.usernameInput).toBeVisible();
       await expect(loginPage.passwordInput).toBeVisible();
     });
@@ -224,11 +225,11 @@ test.describe('AUTH — Logout', () => {
     });
 
     await test.step('Attempt to access protected route', async () => {
-      await page.goto('/inventory.html');
+      await page.goto(SaucedemoRoutes.INVENTORY);
     });
 
     await test.step('Verify redirect to login with error', async () => {
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
       await expect(loginPage.errorMessage).toBeVisible();
     });
   });
@@ -246,7 +247,7 @@ test.describe('AUTH — Protected Routes', { tag: '@regression' }, () => {
       });
 
       await test.step('Verify redirect to login with error message', async () => {
-        await expect(page).toHaveURL('/');
+        await expect(page).toHaveURL(SaucedemoRoutes.HOME);
         await expect(loginPage.errorMessage).toBeVisible();
         await expect(loginPage.errorMessage).toHaveText(protectedRouteError(path));
       });

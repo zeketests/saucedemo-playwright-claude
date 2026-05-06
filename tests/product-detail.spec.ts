@@ -2,12 +2,13 @@ import { test, expect } from './fixtures';
 import { InventoryPage } from '../pages/InventoryPage';
 import { ProductDetailPage } from '../pages/ProductDetailPage';
 import { Products } from '../data/products';
+import { SaucedemoRoutes } from '../data/api';
 
 const PRODUCT = Products.BACKPACK;
 
 test.describe('DET — Product Detail', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/inventory.html');
+    await page.goto(SaucedemoRoutes.INVENTORY);
     const inventory = new InventoryPage(page);
     await inventory.clickProductName(PRODUCT.name);
     await expect(page).toHaveURL(/\/inventory-item\.html\?id=\d+/);
@@ -85,7 +86,7 @@ test.describe('DET — Product Detail', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify navigation back to inventory', async () => {
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
   });
 

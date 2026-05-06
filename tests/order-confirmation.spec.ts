@@ -1,30 +1,6 @@
-import { test, expect } from './fixtures';
-import { InventoryPage } from '../pages/InventoryPage';
-import { CartPage } from '../pages/CartPage';
-import { CheckoutInfoPage } from '../pages/CheckoutInfoPage';
-import { CheckoutOverviewPage } from '../pages/CheckoutOverviewPage';
+import { test, expect, placeOrder } from './fixtures';
 import { OrderConfirmationPage } from '../pages/OrderConfirmationPage';
-import { Products } from '../data/products';
-import { Page } from '@playwright/test';
-
-async function placeOrder(page: Page) {
-  await page.goto('/inventory.html');
-  const inventory = new InventoryPage(page);
-  await inventory.addToCart(Products.BACKPACK.slug);
-  await inventory.header.cartLink.click();
-
-  const cart = new CartPage(page);
-  await cart.proceedToCheckout();
-
-  const checkoutInfo = new CheckoutInfoPage(page);
-  await checkoutInfo.fillForm('John', 'Doe', '12345');
-  await checkoutInfo.continue();
-
-  const overview = new CheckoutOverviewPage(page);
-  await overview.finish();
-
-  await expect(page).toHaveURL('/checkout-complete.html');
-}
+import { SaucedemoRoutes } from '../data/api';
 
 test.describe('CONF — Order Confirmation', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
@@ -63,7 +39,7 @@ test.describe('CONF — Order Confirmation', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify navigation back to inventory', async () => {
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
   });
 

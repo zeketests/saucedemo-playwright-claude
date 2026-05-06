@@ -1,11 +1,12 @@
 import { errorTest as test, expect } from './fixtures';
 import { InventoryPage } from '../pages/InventoryPage';
 import { Products, SortOptions, ExpectedSortOrder } from '../data/products';
+import { SaucedemoRoutes } from '../data/api';
 
 test.describe('ERR — error_user Known Defects', { tag: '@regression' }, () => {
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/inventory.html');
+    await page.goto(SaucedemoRoutes.INVENTORY);
   });
 
   // Known defect: add to cart fails for Bolt T-Shirt, Fleece Jacket, and Red T-Shirt.
@@ -63,7 +64,7 @@ test.describe('ERR — error_user Known Defects', { tag: '@regression' }, () => 
   test('[ERR-04] completing checkout should navigate to order confirmation', async ({ page }) => {
     test.fail(true, 'error_user: Finish button on checkout overview does not navigate to checkout-complete');
 
-    await page.goto('/cart.html');
+    await page.goto(SaucedemoRoutes.CART);
     await page.locator('[data-test="checkout"]').click();
     await page.locator('[data-test="firstName"]').fill('Test');
     await page.locator('[data-test="lastName"]').fill('User');
@@ -71,6 +72,6 @@ test.describe('ERR — error_user Known Defects', { tag: '@regression' }, () => 
     await page.locator('[data-test="continue"]').click();
     await page.locator('[data-test="finish"]').click();
 
-    await expect(page).toHaveURL('/checkout-complete.html');
+    await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_COMPLETE);
   });
 });

@@ -1,8 +1,8 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 
-export class OrderConfirmationPage {
-  readonly page: Page;
+export class OrderConfirmationPage extends BasePage {
   readonly header: HeaderComponent;
   readonly pageTitle: Locator;
   readonly completeHeader: Locator;
@@ -11,13 +11,13 @@ export class OrderConfirmationPage {
   readonly backToProductsButton: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.header = new HeaderComponent(page);
-    this.pageTitle = page.locator('[data-test="title"]');
-    this.completeHeader = page.locator('[data-test="complete-header"]');
-    this.completeText = page.locator('[data-test="complete-text"]');
-    this.ponyExpressImage = page.locator('[data-test="pony-express"]');
-    this.backToProductsButton = page.locator('[data-test="back-to-products"]');
+    this.pageTitle = page.getByTestId('title');
+    this.completeHeader = page.getByTestId('complete-header');
+    this.completeText = page.getByTestId('complete-text');
+    this.ponyExpressImage = page.getByTestId('pony-express');
+    this.backToProductsButton = page.getByTestId('back-to-products');
   }
 
   async backToProducts() {

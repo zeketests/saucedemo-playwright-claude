@@ -1,7 +1,7 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class CheckoutOverviewPage {
-  readonly page: Page;
+export class CheckoutOverviewPage extends BasePage {
   readonly cartItems: Locator;
   readonly paymentInfoValue: Locator;
   readonly shippingInfoValue: Locator;
@@ -12,15 +12,15 @@ export class CheckoutOverviewPage {
   readonly cancelButton: Locator;
 
   constructor(page: Page) {
-    this.page = page;
-    this.cartItems = page.locator('[data-test="inventory-item"]');
-    this.paymentInfoValue = page.locator('[data-test="payment-info-value"]');
-    this.shippingInfoValue = page.locator('[data-test="shipping-info-value"]');
-    this.subtotalLabel = page.locator('[data-test="subtotal-label"]');
-    this.taxLabel = page.locator('[data-test="tax-label"]');
-    this.totalLabel = page.locator('[data-test="total-label"]');
-    this.finishButton = page.locator('[data-test="finish"]');
-    this.cancelButton = page.locator('[data-test="cancel"]');
+    super(page);
+    this.cartItems = page.getByTestId('inventory-item');
+    this.paymentInfoValue = page.getByTestId('payment-info-value');
+    this.shippingInfoValue = page.getByTestId('shipping-info-value');
+    this.subtotalLabel = page.getByTestId('subtotal-label');
+    this.taxLabel = page.getByTestId('tax-label');
+    this.totalLabel = page.getByTestId('total-label');
+    this.finishButton = page.getByTestId('finish');
+    this.cancelButton = page.getByTestId('cancel');
   }
 
   async finish() {
@@ -33,13 +33,13 @@ export class CheckoutOverviewPage {
 
   getItemNames(): Promise<string[]> {
     return this.cartItems
-      .locator('[data-test="inventory-item-name"]')
+      .getByTestId('inventory-item-name')
       .allTextContents();
   }
 
   getItemPrices(): Promise<string[]> {
     return this.cartItems
-      .locator('[data-test="inventory-item-price"]')
+      .getByTestId('inventory-item-price')
       .allTextContents();
   }
 }

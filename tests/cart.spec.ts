@@ -1,23 +1,14 @@
-import { test, expect } from './fixtures';
+import { test, expect, navigateToCartWithItems } from './fixtures';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CartPage } from '../pages/CartPage';
 import { LoginPage } from '../pages/LoginPage';
 import { Users, VALID_PASSWORD } from '../data/credentials';
 import { Products } from '../data/products';
-import { Page } from '@playwright/test';
-
-async function goToCartWithItems(page: Page) {
-  await page.goto('/inventory.html');
-  const inventory = new InventoryPage(page);
-  await inventory.addToCart(Products.BACKPACK.slug);
-  await inventory.addToCart(Products.BIKE_LIGHT.slug);
-  await inventory.header.cartLink.click();
-  await expect(page).toHaveURL('/cart.html');
-}
+import { SaucedemoRoutes } from '../data/api';
 
 test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
-    await goToCartWithItems(page);
+    await navigateToCartWithItems(page);
   });
 
   test('[CART-01] should display all added items with correct name, quantity and price', { tag: '@smoke' }, async ({ page }) => {
@@ -82,7 +73,7 @@ test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify navigation to inventory', async () => {
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
   });
 
@@ -91,7 +82,7 @@ test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
 
     await test.step('Navigate back to inventory', async () => {
       await cart.continueShopping();
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
 
     await test.step('Verify cart badge still shows 2', async () => {
@@ -101,8 +92,8 @@ test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
 
     await test.step('Return to cart and verify items are still there', async () => {
       const inventory = new InventoryPage(page);
-      await inventory.header.cartLink.click();
-      await expect(page).toHaveURL('/cart.html');
+      await inventory.header.goToCart();
+      await expect(page).toHaveURL(SaucedemoRoutes.CART);
       await expect(cart.cartItems).toHaveCount(2);
     });
   });
@@ -115,7 +106,7 @@ test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
     });
 
     await test.step('Verify navigation to checkout step 1', async () => {
-      await expect(page).toHaveURL('/checkout-step-one.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CHECKOUT_STEP_ONE);
     });
   });
 
@@ -129,13 +120,13 @@ test.describe('CART — Shopping Cart', { tag: '@regression' }, () => {
 
     await test.step('Logout', async () => {
       await cart.header.logout();
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL(SaucedemoRoutes.HOME);
     });
 
     await test.step('Re-login as standard_user', async () => {
       const loginPage = new LoginPage(page);
       await loginPage.login(Users.STANDARD, VALID_PASSWORD);
-      await expect(page).toHaveURL('/inventory.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.INVENTORY);
     });
 
     await test.step('Verify cart is empty after new session', async () => {

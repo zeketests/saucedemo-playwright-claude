@@ -1,8 +1,8 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 
-export class ProductDetailPage {
-  readonly page: Page;
+export class ProductDetailPage extends BasePage {
   readonly header: HeaderComponent;
   readonly productName: Locator;
   readonly productDescription: Locator;
@@ -13,15 +13,15 @@ export class ProductDetailPage {
   readonly backToProductsButton: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.header = new HeaderComponent(page);
-    this.productName = page.locator('[data-test="inventory-item-name"]');
-    this.productDescription = page.locator('[data-test="inventory-item-desc"]');
-    this.productPrice = page.locator('[data-test="inventory-item-price"]');
-    this.productImage = page.locator('[data-test="inventory-item"] img');
-    this.addToCartButton = page.locator('[data-test="add-to-cart"]');
-    this.removeButton = page.locator('[data-test="remove"]');
-    this.backToProductsButton = page.locator('[data-test="back-to-products"]');
+    this.productName = page.getByTestId('inventory-item-name');
+    this.productDescription = page.getByTestId('inventory-item-desc');
+    this.productPrice = page.getByTestId('inventory-item-price');
+    this.productImage = page.getByTestId('inventory-item').locator('img');
+    this.addToCartButton = page.getByTestId('add-to-cart');
+    this.removeButton = page.getByTestId('remove');
+    this.backToProductsButton = page.getByTestId('back-to-products');
   }
 
   async addToCart() {

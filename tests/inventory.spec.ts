@@ -6,10 +6,11 @@ import {
   ExpectedSortOrder,
   TOTAL_PRODUCTS,
 } from '../data/products';
+import { SaucedemoRoutes } from '../data/api';
 
 test.describe('INV — Inventory / Product Listing', { tag: '@regression' }, () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/inventory.html');
+    await page.goto(SaucedemoRoutes.INVENTORY);
   });
 
   // ─── Product Display ──────────────────────────────────────────────────────
@@ -181,11 +182,11 @@ test.describe('INV — Inventory / Product Listing', { tag: '@regression' }, () 
 
     await test.step('Add item to cart and click cart icon', async () => {
       await inventory.addToCart(Products.BACKPACK.slug);
-      await inventory.header.cartLink.click();
+      await inventory.header.goToCart();
     });
 
     await test.step('Verify navigation to cart page', async () => {
-      await expect(page).toHaveURL('/cart.html');
+      await expect(page).toHaveURL(SaucedemoRoutes.CART);
     });
   });
 });

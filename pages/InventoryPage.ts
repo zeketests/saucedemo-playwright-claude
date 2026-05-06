@@ -1,26 +1,26 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 import { type SortOption } from '../data/products';
 
-export class InventoryPage {
-  readonly page: Page;
+export class InventoryPage extends BasePage {
   readonly header: HeaderComponent;
   readonly logo: Locator;
   readonly inventoryList: Locator;
   readonly sortDropdown: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.header = new HeaderComponent(page);
     this.logo = page.locator('.app_logo');
-    this.inventoryList = page.locator('[data-test="inventory-container"]');
-    this.sortDropdown = page.locator('[data-test="product-sort-container"]');
+    this.inventoryList = page.getByTestId('inventory-container');
+    this.sortDropdown = page.getByTestId('product-sort-container');
   }
 
   // Returns scoped locator for a single product card by name
   getProductCard(productName: string): Locator {
     return this.inventoryList
-      .locator('[data-test="inventory-item"]')
+      .getByTestId('inventory-item')
       .filter({ hasText: productName });
   }
 
@@ -29,11 +29,11 @@ export class InventoryPage {
   }
 
   async addToCart(slug: string) {
-    await this.page.locator(`[data-test="add-to-cart-${slug}"]`).click();
+    await this.page.getByTestId(`add-to-cart-${slug}`).click();
   }
 
   async removeFromCart(slug: string) {
-    await this.page.locator(`[data-test="remove-${slug}"]`).click();
+    await this.page.getByTestId(`remove-${slug}`).click();
   }
 
   async clickProductName(productName: string) {
@@ -50,13 +50,13 @@ export class InventoryPage {
 
   getProductNames(): Promise<string[]> {
     return this.inventoryList
-      .locator('[data-test="inventory-item-name"]')
+      .getByTestId('inventory-item-name')
       .allTextContents();
   }
 
   getProductPrices(): Promise<string[]> {
     return this.inventoryList
-      .locator('[data-test="inventory-item-price"]')
+      .getByTestId('inventory-item-price')
       .allTextContents();
   }
 

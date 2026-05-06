@@ -1,24 +1,23 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 import { HeaderComponent } from './components/HeaderComponent';
 
-export class CartPage {
-  readonly page: Page;
+export class CartPage extends BasePage {
   readonly header: HeaderComponent;
   readonly cartItems: Locator;
   readonly continueShoppingButton: Locator;
   readonly checkoutButton: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.header = new HeaderComponent(page);
-    this.cartItems = page.locator('[data-test="inventory-item"]');
-    this.continueShoppingButton = page.locator('[data-test="continue-shopping"]');
-    this.checkoutButton = page.locator('[data-test="checkout"]');
-
+    this.cartItems = page.getByTestId('inventory-item');
+    this.continueShoppingButton = page.getByTestId('continue-shopping');
+    this.checkoutButton = page.getByTestId('checkout');
   }
 
   async removeItem(slug: string) {
-    await this.page.locator(`[data-test="remove-${slug}"]`).click();
+    await this.page.getByTestId(`remove-${slug}`).click();
   }
 
   async continueShopping() {
@@ -31,19 +30,19 @@ export class CartPage {
 
   getItemNames(): Promise<string[]> {
     return this.cartItems
-      .locator('[data-test="inventory-item-name"]')
+      .getByTestId('inventory-item-name')
       .allTextContents();
   }
 
   getItemQuantities(): Promise<string[]> {
     return this.cartItems
-      .locator('[data-test="item-quantity"]')
+      .getByTestId('item-quantity')
       .allTextContents();
   }
 
   getItemPrices(): Promise<string[]> {
     return this.cartItems
-      .locator('[data-test="inventory-item-price"]')
+      .getByTestId('inventory-item-price')
       .allTextContents();
   }
 }
