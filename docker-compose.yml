@@ -1,0 +1,10 @@
+services:
+  playwright:
+    build: .
+    environment:
+      - CI=true
+    volumes:
+      - ./test-results:/app/test-results
+      - ./playwright-report:/app/playwright-report
+      - ./blob-report:/app/blob-report
+      - ./allure-results:/app/allure-results

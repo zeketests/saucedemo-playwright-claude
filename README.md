@@ -49,6 +49,9 @@ saucedemo-playwright-claude/
 │   ├── problem-user.spec.ts            # Suite 9: problem_user Known Defects (PROB-01 to PROB-02)
 │   └── error-user.spec.ts              # Suite 10: error_user Known Defects (ERR-01 to ERR-04)
 ├── playwright.config.ts                # Playwright configuration (chromium + api projects)
+├── Dockerfile                          # Docker image based on official Playwright image
+├── docker-compose.yml                  # Docker Compose: runs tests, mounts report dirs
+├── .dockerignore                       # Excludes node_modules, .auth, reports, .git from image
 └── package.json
 ```
 
@@ -58,6 +61,7 @@ saucedemo-playwright-claude/
 
 - [Node.js](https://nodejs.org) v18+
 - npm
+- [Docker](https://docs.docker.com/get-docker/) — optional, for containerised runs
 - [Claude Code](https://claude.ai/code) — for AI-assisted browser exploration with the `playwright-cli` skill
 
 ---
@@ -123,6 +127,35 @@ npm run test:ui
 # Open HTML report after a run
 npm run test:report
 ```
+
+### Running Tests in Docker
+
+No local Node.js or browser install needed — the image bundles Chromium and all dependencies.
+
+```bash
+# Build the image
+npm run docker:build
+
+# Run the full suite (reports written to local ./test-results, ./blob-report, ./allure-results)
+npm run docker:test
+
+# Run a specific shard (set SHARD_INDEX and SHARD_TOTAL first)
+SHARD_INDEX=1 SHARD_TOTAL=3 npm run docker:test:shard
+```
+
+Or use Docker Compose directly:
+
+```bash
+# Run tests
+docker compose run --rm playwright
+
+# Override the command (e.g. run only smoke tests)
+docker compose run --rm playwright npx playwright test --grep "@smoke"
+```
+
+Report directories (`test-results/`, `playwright-report/`, `blob-report/`, `allure-results/`) are mounted as volumes so artifacts persist after the container exits. `.auth/` is excluded from the image — `global-setup.ts` runs inside the container and creates fresh auth state each run.
+
+---
 
 ### Test Tags
 
